@@ -24,25 +24,32 @@ function exibeNumerosPossiveis($minNum, $maxNum) {
     echo "\n";
 }
 
-function verificaResultado($numerosSorteados, $aposta) {
-    $numerosCorretos = array_intersect($numerosSorteados, $aposta);
-    $numerosAcertados = count($numerosCorretos);
+function verificaResultado($numerosSorteados, $aposta, $acertos) {
+    
+    $numerosJogados = count($numerosSorteados);
+    $numerosAcertados = 0;
+    
+    for($i=0;$i<$numerosJogados;$i++){
+        if(in_array($numerosSorteados[i], $aposta)){
+            $numerosAcertados++;
+        }
+    }
 
     if ($numerosAcertados === count($aposta)) {
         echo "Parabéns! Você ganhou!\n";
         exibeSurpresa();
     } else {
-        echo "Você não ganhou. Tente novamente!\n";
+        echo "Você não ganhou, mas você acertou $numerosAcertados dezenas. Mas quem sabe da próxima né?\n";
     }
 }
 
 function exibeSurpresa() {
     echo "Surpresa para você!\n";
-    echo "   ,----,  \n";
-    echo "  /   O   \\ \n";
-    echo " |    _    | \n";
-    echo "  \\ ______ / \n";
-    echo " Parabéns!\n";
+    echo "  O \n";
+    echo " /|\ \n";
+    echo "  | \n";
+    echo " / \ \n";
+    echo "/   \ \n";
 }
 
 $loterias = [
@@ -133,12 +140,12 @@ exibeNumerosPossiveis($params['minNum'], $params['maxNum']);
 $opcaoApostaAleatoria = readline("Deseja criar uma aposta aleatória? (s/n): ");
 if (strtolower($opcaoApostaAleatoria) === 's') {
     $numDezenas = intval(readline("Quantos números você quer na aposta? "));
-    $numerosEscolhidos = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
+    $numerosEscolhidos = geraApostaAleatoria($params['minNum'], $params['maxNum'], $minDezenas);
     
     echo "Quantidade de apostas desejadas: ";
     $quantidadeApostas = intval(readline());
 
-    $numerosSorteados = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
+    $numerosSorteados = geraApostaAleatoria($params['minNum'], $params['maxNum'], $minDezenas);
     
     echo "\nNúmeros sorteados: " . join(' ', $numerosSorteados) . "\n";
     
@@ -147,7 +154,7 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
         for ($i = 0; $i < $quantidadeApostas; $i++) {
             $apostaAleatoria = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
             echo "Aposta " . ($i + 1) . ": " . join(' ', $apostaAleatoria) . "\n";
-            verificaResultado($numerosSorteados, $apostaAleatoria);
+            verificaResultado($numerosSorteados, $apostaAleatoria, $acertos);
             echo "\n";
         }
     }
@@ -176,7 +183,7 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
     
     echo "\nAposta escolhida:\n";
     echo join(' ', $numerosEscolhidos) . "\n";
-    verificaResultado($numerosSorteados, $numerosEscolhidos);
+    verificaResultado($numerosSorteados, $numerosEscolhidos, $acertos);
     echo "\n";
 }
 
