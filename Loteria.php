@@ -87,6 +87,7 @@ function calculaTotalGasto($quantidade, $precoPorAposta) {
 }
 
 function exibeNumerosPossiveis($minNum, $maxNum) {
+    
     echo "Números possíveis: ";
     for ($i = $minNum; $i <= $maxNum; $i++) {
         echo "$i ";
@@ -107,10 +108,18 @@ function verificaResultado($numerosSorteados, $nossaAposta) {
     }
 
     if ($numerosAcertados === count($numerosSorteados)) {
+        
         echo "Parabéns! Você ganhou!\n";
         exibeSurpresa();
+
+    } else if ($numerosAcertados === 0){
+       
+        echo "Eu sinto muito, mas você não acertou nenhuma dezena";
+
     } else {
+        
         echo "Você não ganhou, mas você acertou $numerosAcertados dezenas. Mas quem sabe da próxima né?\n";
+
     }
 }
 
@@ -150,7 +159,7 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
     } while ($numDezenas < $params['minDezenas'] || $numDezenas > $params['maxDezenas']);
 
 
-    $numerosEscolhidos = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
+    $numerosEscolhidos = geraApostaAleatoria($params['minNum'], $params['maxNum'], $params['minDezenas']);
     
     echo "Quantidade de apostas desejadas: ";
     $quantidadeApostas = intval(readline());
@@ -162,7 +171,7 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
     if ($quantidadeApostas > 1) {
         echo "\nApostas aleatórias geradas pelo sistema:\n";
         for ($i = 0; $i < $quantidadeApostas; $i++) {
-            $apostaAleatoria = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
+            $apostaAleatoria = geraApostaAleatoria($params['minNum'], $params['maxNum'], $params['minDezenas']);
             echo "Aposta " . ($i + 1) . ": " . join(' ', $apostaAleatoria) . "\n";
 
             verificaResultado($numerosSorteados, $apostaAleatoria);
@@ -171,19 +180,19 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
     } else if ($quantidadeApostas == 1){
         echo "\nAposta aleatória gerada pelo sistema:\n";
         for ($i = 0; $i < $quantidadeApostas; $i++) {
-            $apostaAleatoria = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
+            $apostaAleatoria = geraApostaAleatoria($params['minNum'], $params['maxNum'], $params['minDezenas']);
             echo "Aposta " . ($i + 1) . ": " . join(' ', $apostaAleatoria) . "\n";
 
             verificaResultado($numerosSorteados, $apostaAleatoria);
             echo "\n";
         }
     }
-} else { //Aqui começa a aposta gerada pelo usuario ----------------------------------------
-    $numDezenas = intval(readline("Quantos números você quer na aposta? "));
-    echo "Quantidade de apostas desejadas: 1\n";
+} else if (strtolower($opcaoApostaAleatoria) === 'n'){ //Aqui começa a aposta gerada pelo usuario ----------------------------------------
     
-    $numerosEscolhidos = explode(',', readline("Digite os números: "));
-    $numerosEscolhidos = array_map('intval', $numerosEscolhidos);
+    $numDezenas = explode(',', readline("Digite os números da(s) sua(s) aposta(s): "));
+    $numerosEscolhidos = array_map('intval', $numDezenas);
+    
+    $quantidadeApostas = intval(readline("Quantidade de apostas que serão realizadas: \n"));
 
     if (count($numerosEscolhidos) < $params['minDezenas'] || count($numerosEscolhidos) > $params['maxDezenas']) {
         echo "Quantidade inválida de números para esta loteria.\n";
@@ -197,7 +206,7 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
         }
     }
     
-    $numerosSorteados = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
+    $numerosSorteados = geraApostaAleatoria($params['minNum'], $params['maxNum'], $params['minDezenas']);
     
     echo "\nNúmeros sorteados: " . join(' ', $numerosSorteados) . "\n";
     
@@ -205,6 +214,13 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
     echo join(' ', $numerosEscolhidos) . "\n";
     verificaResultado($numerosSorteados, $numerosEscolhidos);
     echo "\n";
+
+    //converte o tipo da variavel de array para inteiro
+    $numDezenas = count($numDezenas);
+
+} else {
+    echo "Opção inválida.\n";
+    exit();
 }
 
 $totalGasto = calculaTotalGasto($quantidadeApostas, $params['valoresAposta'][$numDezenas]);
