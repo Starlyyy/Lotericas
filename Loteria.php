@@ -168,8 +168,17 @@ if (strtolower($opcaoApostaAleatoria) === 's') {
             verificaResultado($numerosSorteados, $apostaAleatoria);
             echo "\n";
         }
+    } else if ($quantidadeApostas == 1){
+        echo "\nAposta aleatória gerada pelo sistema:\n";
+        for ($i = 0; $i < $quantidadeApostas; $i++) {
+            $apostaAleatoria = geraApostaAleatoria($params['minNum'], $params['maxNum'], $numDezenas);
+            echo "Aposta " . ($i + 1) . ": " . join(' ', $apostaAleatoria) . "\n";
+
+            verificaResultado($numerosSorteados, $apostaAleatoria);
+            echo "\n";
+        }
     }
-} else { 
+} else { //Aqui começa a aposta gerada pelo usuario ----------------------------------------
     $numDezenas = intval(readline("Quantos números você quer na aposta? "));
     echo "Quantidade de apostas desejadas: 1\n";
     
